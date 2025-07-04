@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>eSoko Buy & Sell - House & Land Sales</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      margin: 0;
+      background: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    nav {
+      background: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #f97316;
+    }
+    .search-input {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 250px;
+    }
+    .filter-bar {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 2rem;
+      overflow-x: auto;
+    }
+    .filter-btn {
+      background-color: #f3f4f6;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background-color: #f97316;
+      color: #fff;
+    }
+    .container {
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      overflow: hidden;
+      transition: 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+    }
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .card-body {
+      padding: 1rem;
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+    .card-desc {
+      font-size: 0.85rem;
+      color: #555;
+      margin-bottom: 0.6rem;
+    }
+    .card-price {
+      font-weight: bold;
+      color: #f97316;
+      margin-bottom: 0.6rem;
+    }
+    .card button {
+      background: #f97316;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    footer {
+      background: #1f2937;
+      color: #fff;
+      margin-top: auto;
+    }
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      padding: 2rem;
+      flex-wrap: wrap;
+    }
+    .footer-brand {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #f97316;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .footer-links button {
+      background: transparent;
+      border: 1px solid #f97316;
+      color: #f97316;
+      border-radius: 6px;
+      padding: 0.3rem 0.8rem;
+      cursor: pointer;
+    }
+    .footer-bottom {
+      text-align: center;
+      font-size: 0.8rem;
+      padding: 1rem;
+      background: #111827;
+    }
+    .social-icons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+    .social-icons a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="brand">eSoko Buy & Sell</div>
+    <input type="text" id="searchInput" class="search-input" placeholder="Search properties..." oninput="applyFilters()" />
+  </nav>
+
+  <!-- Filter Buttons -->
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterByCategory('All')">All</button>
+    <button class="filter-btn" onclick="filterByCategory('House')">Houses</button>
+    <button class="filter-btn" onclick="filterByCategory('Land')">Land</button>
+    <button class="filter-btn" onclick="filterByCategory('Apartment')">Apartments</button>
+    <button class="filter-btn" onclick="filterByCategory('Villa')">Villas</button>
+    <button class="filter-btn" onclick="window.location.href='about.html'">About Us</button>
+    
+  </div>
+
+  <!-- Properties Grid -->
+  <main class="container" id="productContainer"></main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">eSoko Buy & Sell</div>
+      <div class="social-icons">
+        <a href="#">📘</a>
+        <a href="#">🐦</a>
+        <a href="#">📸</a>
+        <a href="#">💼</a>
+      </div>
+      <div class="footer-links">
+        <button>Terms of Service</button>
+        <button>Privacy Policy</button>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2025 e_Isoko. All rights reserved. <br/>
+      Developed by <a href="#" style="color: #f97316; text-decoration: none;">ISHA CodeCraft Hub</a>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    const properties = [
+      {
+        title: "3-Bedroom House in Kicukiro",
+        category: "House",
+        price: 350000,
+        image: "1.jpg",
+        desc: "Modern house with parking and garden."
+      },
+      {
+        title: "Commercial Plot in Gisozi",
+        category: "Land",
+        price: 280000,
+        image: "22.jpg",
+        desc: "Ideal for warehouse or shops."
+      },
+      {
+        title: "Furnished Apartment in Remera",
+        category: "Apartment",
+        price: 400000,
+        image: "3.jpg",
+        desc: "2-bedroom apartment with Wi-Fi and balcony."
+      },
+      {
+        title: "Luxury Villa in Nyarutarama",
+        category: "Villa",
+        price: 120000,
+        image: "4.jpg",
+        desc: "Spacious villa with pool and rooftop."
+      },
+      {
+        title: "Residential Land in Kanombe",
+        category: "Land",
+        price: 200000,
+        image: "6.png",
+        desc: "Secure fenced land for family home."
+      },
+      {
+        title: "Penthouse Apartment in Kiyovu",
+        category: "Apartment",
+        price: 750000,
+        image: "5.jpg",
+        desc: "Modern high-rise view apartment."
+      },
+      {
+        title: "Family House in Kimironko",
+        category: "House",
+        price: 380000,
+        image: "7.jpg",
+        desc: "Quiet area, schools and transport nearby."
+      }
+    ];
+
+    let currentCategory = "All";
+
+    function renderProducts(filtered) {
+      const container = document.getElementById("productContainer");
+      container.innerHTML = "";
+      filtered.forEach(p => {
+        container.innerHTML += `
+          <div class="card">
+            <img src="${p.image}" alt="${p.title}">
+            <div class="card-body">
+              <div class="card-title">${p.title}</div>
+              <div class="card-desc">${p.desc}</div>
+              <div class="card-price">RWF ${p.price.toLocaleString()}</div>
+              <button>Contact Agent</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function applyFilters() {
+      const term = document.getElementById("searchInput").value.toLowerCase();
+      const filtered = properties.filter(p =>
+        (currentCategory === "All" || p.category === currentCategory) &&
+        p.title.toLowerCase().includes(term)
+      );
+      renderProducts(filtered);
+    }
+
+    function filterByCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.textContent.toLowerCase().includes(cat.toLowerCase()) || cat === "All" && btn.textContent === "All") {
+          btn.classList.add('active');
+        }
+      });
+      applyFilters();
+    }
+
+    renderProducts(properties); // Initial load
+  </script>
+</body>
+</html>
